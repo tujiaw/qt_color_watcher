@@ -18,6 +18,7 @@ Dialog::~Dialog()
 
 void Dialog::slotDataChanged()
 {
+    qDebug() << "xxxxx";
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
     QString text;
@@ -34,24 +35,24 @@ void Dialog::slotDataChanged()
     if (!text.isEmpty()) {
         QString backgroundColor;
         QString labelColor;
+        QColor color;
 
         text = text.toLower();
-        int start = text.indexOf("rgb(");
-        int end = text.lastIndexOf(")");
-        if (end - start > 5) {
-            backgroundColor = text.mid(start, end - start + 1);
-            // 计算反色
-            QString labelColor = text.mid(start + 4, end - start - 4);
-            qDebug() << labelColor;
-            QStringList strList = labelColor.split(",");
-            if (strList.size() >= 3) {
-                int red = 255 - strList[0].toInt();
-                int green = 255 - strList[1].toInt();
-                int blue = 255 - strList[2].toInt();
-                labelColor = QString("rgb(%1, %2, %3)").arg(red).arg(green).arg(blue);
+        int index1 = text.indexOf("rgb(");
+        int index2 = text.indexOf("#");
+        int index3 = text.indexOf("qcolor(");
+        if (index1 >= 0) {
+            int start = index1;
+            int end = text.indexOf(")", start + 4);
+            if (end > start) {
+                backgroundColor = text.mid(start + 4, end - start - 4);
+                QStringList strList = backgroundColor.split(",");
+                if (strList.size() >= 3) {
+                    color = QColor(strList[0].toInt(), strList[1].toInt(), strList[2].toInt());
+                }
             }
-        } else {
-            start = text.indexOf("#");
+        } else if (index2 >= 0) {
+            int start = index2;
             if (text.length() - start >= 7) {
                 int count = 0;
                 for (int i=1; i<=6; i++) {
@@ -61,15 +62,31 @@ void Dialog::slotDataChanged()
                     }
                 }
                 if (count == 6) {
-                    backgroundColor = text.mid(start, 7);
-                    QColor clr(backgroundColor);
-                    labelColor = QString("rgb(%1, %2, %3)").arg(255-clr.red()).arg(255-clr.green()).arg(255-clr.blue());
+                    color = QColor(text.mid(start, 7));
+                }
+            }
+        } else if (index3 >= 0) {
+            int start = index3;
+            int end = text.indexOf(")", start + 7);
+            if (end > start) {
+                qDebug() << "end:" << end << ", start:" << start;
+                backgroundColor = text.mid(start + 7, end - start - 7);
+                QStringList strList = backgroundColor.split(",");
+                if (strList.size() >= 3) {
+                    color = QColor(strList[0].toInt(), strList[1].toInt(), strList[2].toInt());
                 }
             }
         }
 
-        this->setStyleSheet(QString("QDialog { background:%1; }").arg(backgroundColor));
-        ui->labelColor->setText(backgroundColor);
-        ui->labelColor->setStyleSheet(QString("QLabel { background:transparent; color:%1}").arg(labelColor));
+        if (color.isValid()) {
+            //QColor inverseColor(255-color.red(), 255-color.green(), 255-color.blue());
+            //this->setStyleSheet(QString("QDialog { background:%1; }").arg(inverseColor.name()));
+            this->setStyleSheet(QString("QDialog { background:%1; }").arg(color.name()));
+            ui->leColor1->setText(color.name());
+            ui->leColor2->setText(QString("RGB(%1, %2, %3)").arg(color.red()).arg(color.green()).arg(color.blue()));
+        } else {
+            ui->leColor1->setText("");
+            ui->leColor2->setText("");
+        }
     }
 }

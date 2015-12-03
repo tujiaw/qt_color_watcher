@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
-    <height>137</height>
+    <width>234</width>
+    <height>140</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>39</height>
+       <height>28</height>
       </size>
      </property>
     </spacer>
@@ -34,18 +34,21 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>106</width>
+       <width>34</width>
        <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
    <item row="1" column="1">
-    <widget class="QLabel" name="labelColor">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLineEdit" name="leColor1"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="leColor2"/>
+     </item>
+    </layout>
    </item>
    <item row="1" column="2">
     <spacer name="horizontalSpacer_2">
@@ -54,7 +57,7 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>105</width>
+       <width>34</width>
        <height>20</height>
       </size>
      </property>
@@ -68,7 +71,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>39</height>
+       <height>28</height>
       </size>
      </property>
     </spacer>
